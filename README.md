@@ -2,7 +2,7 @@
 Contexto:
 Entrenar por tu cuenta siendo un corredor, puede ser bastante abrumador al principio si no cuentas con una base de entrenamientos dependiendo de tu nivel. Realmente el progreso al momento de correr se empieza notar hasta que reconoces tus carencias y debilidades y entrenas específicamente para mejorar en dichas áreas.
 
-Este proyecto consiste en desarrollar un programa donde se pueda analizar el rendimiento de un corredor a partir de diferente datos obtenidos durante sus entrenamientos. El usuario deberá ingresar información como la distancia corrida, el tiempo realizado, su tiempo por kilometro promedio, los días que tiene para entrenar y su frecuencia cardiaca promedio y máxima (si se conoce).
+Este proyecto consiste en desarrollar un programa donde se pueda analizar el rendimiento de un corredor a partir de diferente datos obtenidos durante sus entrenamientos. El usuario deberá ingresar información como la distancia corrida, el tiempo realizado, y los días que tiene para entrenar.
 
 A partir de estos datos, el programa realizará diferentes cálculos para determinar el ritmo del corredor y analizar de manera aproximada la intensidad del esfuerzo durante los entrenamiento y estimar tiempos para otras distancia. Además, mediante un conjunto de condiciones, el sistema expondrá que aspecto del rendimiento podría recibir mayor atención, como resistencia aeróbica, velocidad o capacidad para mantener ritmos elevados.
 
@@ -12,9 +12,13 @@ El objetivo principal del proyecto es crear una herramienta sencilla y fácil de
 
 El Algoritmo sería el siguiente:
 1. Registrar datos
-2. Analizar Rendimiento
-3. Detectar áreas de mejora
-4. Preguntar días disponibles
-5. Seleccionar los entrenamientos predeterminados
-6. Generar plan de entrenamiento semanal
-7. Finalizar
+   Input: distancia, tiempo, días disponibles, nivel de esfuerzo
+3. Analizar Rendimiento
+   Calcular mediante divisiones y multiplicaciones el ritmo por kilometro
+5. Detectar áreas de mejora
+   Mediante if y el nivel de esfuerzo
+7. Preguntar días disponibles
+8. Seleccionar los entrenamientos predeterminados
+   Mediante las áreas de mejora y los días disponibles, seleccionar los entrenamientos
+10. Generar plan de entrenamiento semanal
+11. Finalizar
