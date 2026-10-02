@@ -1,65 +1,101 @@
-#Pedir datos a usuario sobre su carrera
-tiempo_min= int(input("Ingresa los minutos que realizaste: "))
-tiempo_seg =int(input("Ingresa los segundos restantes: "))
-distancia =float(input("Ingresa la distancia total recorrida en km: "))
-esfuerzo = int(input("Ingresa tu nivel de esfuerzo del 1 al 10: "))
-peso = float(input("Ingresa tu peso: "))
+"""Constantes"""
+SEGUNDOS_POR_MINUTO = 60
+SEGUNDOS_POR_HORA = 3600
+METROS_POR_KM = 1000
+FACTOR_VO2_VELOCIDAD = 0.2
+VO2_REPOSO = 3.5
+DIVISOR_CALORIAS = 200
 
-#Calcular tiempo total en segundos
-def tiempo_total(tiempo_min, tiempo_seg):
-    tiempo= tiempo_min * 60 + tiempo_seg
+"""Devuelve el tiempo total en segundos."""
+def calcular_tiempo_total(minutos, segundos):
+    tiempo = minutos * SEGUNDOS_POR_MINUTO + segundos
     return tiempo
 
-#Calcular velocidad km/h
-def velocidad_hr(tiempo_min, tiempo_seg, distancia):
-    velseg = distancia/tiempo_total(tiempo_min, tiempo_seg)
-    velkmhr = (velseg*3600)
-    return velkmhr
+"""Devuelve la velocidad promedio en km/h."""
+def calcular_velocidad_kmh(minutos, segundos, distancia_km):
+    tiempo_total = calcular_tiempo_total(minutos, segundos)
+    velocidad = distancia_km / tiempo_total * SEGUNDOS_POR_HORA
+    return velocidad
 
-#Calcular velocidad m/min
-def velocidad_min (tiempo_min, tiempo_seg, distancia):
-    velm_min= (velocidad_hr(tiempo_min, tiempo_seg, distancia)*1000)/60
-    return velm_min
+"""Devuelve la velocidad promedio en m/min."""
+def calcular_velocidad_m_min(minutos, segundos, distancia_km):
+    velocidad_kmh = calcular_velocidad_kmh(minutos, segundos, distancia_km)
+    velocidad_m_min = velocidad_kmh * METROS_POR_KM / SEGUNDOS_POR_MINUTO
+    return velocidad_m_min
 
-#Calcular ritmo de carrera
-def ritmo(tiempo_min, tiempo_seg,distancia):
-    temp = 60/velocidad_hr(tiempo_min, tiempo_seg, distancia)
-    ritmo_m= int(temp)
-    ritmo_s= int((temp % 1)*60)
-    return print("Tu ritmo de carrera es:",ritmo_m,":",ritmo_s, "min/km")
+"""Devuelve el ritmo de carrera como (minutos, segundos) por km."""
+def calcular_ritmo(minutos, segundos, distancia_km):
+    tiempo_total = calcular_tiempo_total(minutos, segundos)
+    segundos_por_km = int(tiempo_total / distancia_km)
+    ritmo_minutos = segundos_por_km // SEGUNDOS_POR_MINUTO
+    ritmo_segundos = segundos_por_km % SEGUNDOS_POR_MINUTO
+    return ritmo_minutos, ritmo_segundos
 
+"""Devuelve el consumo de oxigeno estimado (ml/kg/min)."""
+def calcular_vo2(minutos, segundos, distancia_km):
+    velocidad = calcular_velocidad_m_min(minutos, segundos, distancia_km)
+    vo2 =FACTOR_VO2_VELOCIDAD * velocidad + VO2_REPOSO
+    return vo2
 
-#Calcular V02 max estimado
-def v02_max(tiempo_min, tiempo_seg, distancia):
-    v02= (0.2*velocidad_min(tiempo_min, tiempo_seg, distancia))+3.5
-    return v02
+"""Devuelve el equivalente metabolico (MET) de la carrera."""
+def calcular_met(minutos, segundos, distancia_km):
+    met_total = calcular_vo2(minutos, segundos, distancia_km) / VO2_REPOSO
+    return met_total
 
-#Calcular MET
-def met(tiempo_min, tiempo_seg, distancia):
-    calc_met=(v02_max(tiempo_min, tiempo_seg, distancia)/3.5)
-    return calc_met
+"""Devuelve las calorias totales quemadas durante la carrera."""
+def calcular_calorias(peso_kg, minutos, segundos, distancia_km):
+    met = calcular_met(minutos, segundos, distancia_km)
+    duracion_min = calcular_tiempo_total(minutos, segundos)
+    duracion_min /= SEGUNDOS_POR_MINUTO
+    kcal_por_min = met * VO2_REPOSO * peso_kg / DIVISOR_CALORIAS
+    calorias = kcal_por_min * duracion_min
+    return calorias
 
-#Calcular Calorias
-def calorias(peso,tiempo_min, tiempo_seg, distancia):
-    peso_kcal= peso/200
-    kcal= met(tiempo_min, tiempo_seg, distancia)*3.5*peso_kcal* velocidad_min(tiempo_min, tiempo_seg, distancia)
-    return kcal
+"""Devuelve la zona de entrenamiento segun el esfuerzo (1 a 10)."""
+def obtener_zona_entrenamiento(esfuerzo):
+    if esfuerzo <=3:
+        return "Zona a trabajar: Velocidad"
+    if esfuerzo >= 4 and esfuerzo <=5:
+        return "Zona a trabajar: Resistencia aeróbica"
+    if esfuerzo >=6 and esfuerzo <= 7:
+        return "Zona a trabajar: Umbral"
+    if esfuerzo >=8 and esfuerzo <=9:
+        return "Zona a trabajar: V02 máximo"
+    if esfuerzo == 10:
+        return "Zona a trabajar: Recuperacion"
+    
+"""Devuelve el nivel de condicion fisica segun el VO2 estimado."""
+def clasificar_vo2(vo2):
+    if vo2 <= 30:
+        return "Bajo"
+    if vo2 >= 31 and vo2 <= 40:
+        return "Regular"
+    if vo2 >= 41 and vo2 <= 50:
+        return "Bueno"
+    if vo2 >= 51 and vo2 <= 60 :
+        return "Muy bueno"
+    if vo2 > 60:
+        return "Excelente"
+    
 
-#Prints
-print(f"Tu velocidad es: {velocidad_hr(tiempo_min, tiempo_seg, distancia):.2f} km/h")
-ritmo(tiempo_min, tiempo_seg, distancia)
-print (f"Tu v02 max estimado es: {v02_max(tiempo_min, tiempo_seg, distancia):.2f}")
-print (f"Tu met es: {met(tiempo_min, tiempo_seg, distancia):.2f}")
-print(f"Las calorias que consumiste fueron: {calorias(peso,tiempo_min, tiempo_seg, distancia):.2f}")
+"""Pide los datos al usuario e imprime el analisis."""
+minutos = int(input("Ingresa los minutos que realizaste: "))
+segundos = int(input("Ingresa los segundos restantes: "))
+distancia_km = float(input("Ingresa la distancia total en km: "))
+peso_kg = float(input("Ingresa tu peso en kg: "))
+esfuerzo = int(input("Ingresa tu nivel de esfuerzo del 1 al 10: "))
 
-#Calculo de esfuerzo
-if esfuerzo <=3:
-    print ("Zona a trabajar: Velocidad")
-if esfuerzo >= 4 and esfuerzo <=5:
-    print("Zona a trabajar: Resistencia aeróbica")
-if esfuerzo >=6 and esfuerzo <= 7:
-    print("Zona a trabajar: Umbral")
-if esfuerzo >=8 and esfuerzo <=9:
-    print("Zona a trabajar: V02 máximo")
-if esfuerzo == 10:
-    print("Zona a trabajar: Recuperacion")
+velocidad = calcular_velocidad_kmh(minutos, segundos, distancia_km)
+ritmo_min, ritmo_seg = calcular_ritmo(minutos, segundos, distancia_km)
+vo2 = calcular_vo2(minutos, segundos, distancia_km)
+nivel_vo2 = clasificar_vo2(vo2)
+met = calcular_met(minutos, segundos, distancia_km)
+calorias = calcular_calorias(peso_kg, minutos, segundos, distancia_km)
+
+print(f"Tu velocidad es: {velocidad:.2f} km/h")
+print(f"Tu ritmo de carrera es: {ritmo_min}:{ritmo_seg:02d} min/km")
+print(f"Tu VO2 estimado es: {vo2:.2f}")
+print(f"Tu nivel de VO2 es: {nivel_vo2}")
+print(f"Tu MET es: {met:.2f}")
+print(f"Calorias quemadas: {calorias:.2f}")
+print(f"Zona a trabajar: {obtener_zona_entrenamiento(esfuerzo)}")
