@@ -78,24 +78,74 @@ def clasificar_vo2(vo2):
         return "Excelente"
     
 
-"""Pide los datos al usuario e imprime el analisis."""
-minutos = int(input("Ingresa los minutos que realizaste: "))
-segundos = int(input("Ingresa los segundos restantes: "))
-distancia_km = float(input("Ingresa la distancia total en km: "))
-peso_kg = float(input("Ingresa tu peso en kg: "))
-esfuerzo = int(input("Ingresa tu nivel de esfuerzo del 1 al 10: "))
+"""Programa principal"""
+continuar = "si"
 
-velocidad = calcular_velocidad_kmh(minutos, segundos, distancia_km)
-ritmo_min, ritmo_seg = calcular_ritmo(minutos, segundos, distancia_km)
-vo2 = calcular_vo2(minutos, segundos, distancia_km)
-nivel_vo2 = clasificar_vo2(vo2)
-met = calcular_met(minutos, segundos, distancia_km)
-calorias = calcular_calorias(peso_kg, minutos, segundos, distancia_km)
+while continuar == "si":
 
-print(f"Tu velocidad es: {velocidad:.2f} km/h")
-print(f"Tu ritmo de carrera es: {ritmo_min}:{ritmo_seg:02d} min/km")
-print(f"Tu VO2 estimado es: {vo2:.2f}")
-print(f"Tu nivel de VO2 es: {nivel_vo2}")
-print(f"Tu MET es: {met:.2f}")
-print(f"Calorias quemadas: {calorias:.2f}")
-print(f"Zona a trabajar: {obtener_zona_entrenamiento(esfuerzo)}")
+    minutos = int(input("Ingresa los minutos que realizaste: "))
+
+    while minutos < 0:
+        print("Error: los minutos no pueden ser negativos.")
+        minutos = int(input("Ingresa los minutos que realizaste: "))
+
+    segundos = int(input("Ingresa los segundos restantes: "))
+
+    while segundos < 0 or segundos > 59:
+        print("Error: los segundos deben estar entre 0 y 59.")
+        segundos = int(input("Ingresa los segundos restantes: "))
+
+    while minutos == 0 and segundos == 0:
+        print("Error: el tiempo debe ser mayor que cero.")
+        minutos = int(input("Ingresa los minutos que realizaste: "))
+        segundos = int(input("Ingresa los segundos restantes: "))
+
+        while minutos < 0:
+            print("Error: los minutos no pueden ser negativos.")
+            minutos = int(input("Ingresa los minutos que realizaste: "))
+
+        while segundos < 0 or segundos > 59:
+            print("Error: los segundos deben estar entre 0 y 59.")
+            segundos = int(input("Ingresa los segundos restantes: "))
+
+    distancia_km = float(input("Ingresa la distancia total en km: "))
+
+    while distancia_km <= 0:
+        print("Error: la distancia debe ser mayor que cero.")
+        distancia_km = float(input("Ingresa la distancia total en km: "))
+
+    peso_kg = float(input("Ingresa tu peso en kg: "))
+
+    while peso_kg <= 0:
+        print("Error: el peso debe ser mayor que cero.")
+        peso_kg = float(input("Ingresa tu peso en kg: "))
+
+    esfuerzo = int(input("Ingresa tu nivel de esfuerzo del 1 al 10: "))
+
+    while esfuerzo < 1 or esfuerzo > 10:
+        print("Error: el esfuerzo debe estar entre 1 y 10.")
+        esfuerzo = int(input("Ingresa tu nivel de esfuerzo del 1 al 10: "))
+
+    velocidad = calcular_velocidad_kmh(minutos, segundos, distancia_km)
+    ritmo_min, ritmo_seg = calcular_ritmo(minutos, segundos, distancia_km)
+    vo2 = calcular_vo2(minutos, segundos, distancia_km)
+    nivel_vo2 = clasificar_vo2(vo2)
+    met = calcular_met(minutos, segundos, distancia_km)
+    calorias = calcular_calorias(peso_kg, minutos, segundos, distancia_km)
+
+    print("ANALISIS DE CARRERA")
+    print(f"Tu velocidad es: {velocidad:.2f} km/h")
+    print(f"Tu ritmo de carrera es: {ritmo_min}:{ritmo_seg:02d} min/km")
+    print(f"Tu VO2 estimado es: {vo2:.2f}")
+    print(f"Tu nivel de VO2 es: {nivel_vo2}")
+    print(f"Tu MET es: {met:.2f}")
+    print(f"Calorias quemadas: {calorias:.2f}")
+    print(obtener_zona_entrenamiento(esfuerzo))
+
+    continuar = input("\n¿Quieres analizar otra carrera? (si/no): ")
+
+    while continuar != "si" and continuar != "no":
+        print("Respuesta no válida. Escribe si o no.")
+        continuar = input("¿Quieres analizar otra carrera? (si/no): ")
+
+print("\nGracias por utilizar el programa de análisis de carrera.")
