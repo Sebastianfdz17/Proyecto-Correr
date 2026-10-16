@@ -34,7 +34,7 @@ def calcular_ritmo(minutos, segundos, distancia_km):
 """Devuelve el consumo de oxigeno estimado (ml/kg/min)."""
 def calcular_vo2(minutos, segundos, distancia_km):
     velocidad = calcular_velocidad_m_min(minutos, segundos, distancia_km)
-    vo2 =FACTOR_VO2_VELOCIDAD * velocidad + VO2_REPOSO
+    vo2 = FACTOR_VO2_VELOCIDAD * velocidad + VO2_REPOSO
     return vo2
 
 """Devuelve el equivalente metabolico (MET) de la carrera."""
@@ -53,17 +53,17 @@ def calcular_calorias(peso_kg, minutos, segundos, distancia_km):
 
 """Devuelve la zona de entrenamiento segun el esfuerzo (1 a 10)."""
 def obtener_zona_entrenamiento(esfuerzo):
-    if esfuerzo <=3:
-        return "Zona a trabajar: Velocidad"
-    if esfuerzo >= 4 and esfuerzo <=5:
-        return "Zona a trabajar: Resistencia aeróbica"
-    if esfuerzo >=6 and esfuerzo <= 7:
-        return "Zona a trabajar: Umbral"
-    if esfuerzo >=8 and esfuerzo <=9:
-        return "Zona a trabajar: V02 máximo"
+    if esfuerzo <= 3:
+        return "Velocidad"
+    if esfuerzo >= 4 and esfuerzo <= 5:
+        return "Resistencia aeróbica"
+    if esfuerzo >= 6 and esfuerzo <= 7:
+        return "Umbral"
+    if esfuerzo >= 8 and esfuerzo <= 9:
+        return "VO2 máximo"
     if esfuerzo == 10:
-        return "Zona a trabajar: Recuperacion"
-    
+        return "Recuperacion"
+
 """Devuelve el nivel de condicion fisica segun el VO2 estimado."""
 def clasificar_vo2(vo2):
     if vo2 <= 30:
@@ -72,11 +72,88 @@ def clasificar_vo2(vo2):
         return "Regular"
     if vo2 >= 41 and vo2 <= 50:
         return "Bueno"
-    if vo2 >= 51 and vo2 <= 60 :
+    if vo2 >= 51 and vo2 <= 60:
         return "Muy bueno"
     if vo2 > 60:
         return "Excelente"
-    
+
+"""Devuelve la lista de días según la cantidad de días que entrenará el usuario."""
+def obtener_dias_semana(dias_disponibles):
+    if dias_disponibles == 2:
+        return ["Martes", "Jueves"]
+    elif dias_disponibles == 3:
+        return ["Lunes", "Miércoles", "Viernes"]
+    elif dias_disponibles == 4:
+        return ["Lunes", "Miércoles", "Viernes", "Sábado"]
+    elif dias_disponibles == 5:
+        return ["Lunes", "Martes", "Jueves", "Viernes", "Sábado"]
+    elif dias_disponibles == 6:
+        return ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+    else:
+        return ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+
+"""Devuelve el plan de entrenamiento específico para la zona y días seleccionados."""
+def generar_plan_personalizado(dias_disponibles, zona):
+    dias = obtener_dias_semana(dias_disponibles)
+    entrenamientos = []
+
+    # Selección de entrenamientos según la zona recomendada
+    if zona == "Velocidad":
+        opciones = [
+            "Piques cortos de aceleración (Sprint 50m)",
+            "Carrera de técnica y multisaltos",
+            "Sprints cortos con descanso completo",
+            "Easy run + 4 aceleraciones finales",
+            "Cuestas cortas a máxima intensidad",
+            "Carrera suave + ejercicios de reactividad",
+            "Descanso activo o rodaje muy suave"
+        ]
+    elif zona == "Resistencia aeróbica":
+        opciones = [
+            "Carrera continua a ritmo cómodo (Easy Run)",
+            "Rodaje suave en Zona 2",
+            "Carrera suave con cambios de ritmo ligeros",
+            "Tirada media regenerativa",
+            "Rodaje cómodo sostenido",
+            "Tirada larga a ritmo suave",
+            "Caminata activa o trote regenerativo"
+        ]
+    elif zona == "Umbral":
+        opciones = [
+            "Easy Run de calentamiento + 20 min a ritmo Umbral",
+            "Intervalos de tiempo (Tempo Run 3x10 min)",
+            "Rodaje suave de recuperación",
+            "Bloques de tempo (2x15 min en Zona 3)",
+            "Tirada larga con bloques a ritmo de competencia",
+            "Fartlek (cambios de ritmo de 2 min)",
+            "Trote muy suave de regeneración"
+        ]
+    elif zona == "VO2 máximo":
+        opciones = [
+            "Intervalos cortos (10x400m a máxima intensidad)",
+            "Easy Run de recuperación",
+            "Repeticiones de 1km a ritmo de VO2 máx",
+            "Intervalos en cuesta de 1 minuto",
+            "Fartlek intensivo (1 min fuerte / 1 min suave)",
+            "Tirada larga suave de descarga",
+            "Descanso activo"
+        ]
+    else: 
+        opciones = [
+            "Caminata o trote muy suave (20 min)",
+            "Estiramientos dinámicos y rodaje suave",
+            "Descanso total",
+            "Caminata al aire libre",
+            "Trote regenerativo muy corto",
+            "Movilidad articular y rodaje ligero",
+            "Descanso total"
+        ]
+
+    for i in range(dias_disponibles):
+        entrenamientos.append(opciones[i])
+
+    return dias, entrenamientos
+
 
 """Programa principal"""
 continuar = "si"
@@ -126,21 +203,35 @@ while continuar == "si":
         print("Error: el esfuerzo debe estar entre 1 y 10.")
         esfuerzo = int(input("Ingresa tu nivel de esfuerzo del 1 al 10: "))
 
+    dias_entreno = int(input("¿Cuántos días a la semana puedes entrenar (1 a 7)?: "))
+
+    while dias_entreno < 1 or dias_entreno > 7:
+        print("Error: ingresa un número de días válido entre 1 y 7.")
+        dias_entreno = int(input("¿Cuántos días a la semana puedes entrenar (1 a 7)?: "))
+
     velocidad = calcular_velocidad_kmh(minutos, segundos, distancia_km)
     ritmo_min, ritmo_seg = calcular_ritmo(minutos, segundos, distancia_km)
     vo2 = calcular_vo2(minutos, segundos, distancia_km)
     nivel_vo2 = clasificar_vo2(vo2)
     met = calcular_met(minutos, segundos, distancia_km)
     calorias = calcular_calorias(peso_kg, minutos, segundos, distancia_km)
+    zona_trabajo = obtener_zona_entrenamiento(esfuerzo)
 
-    print("ANALISIS DE CARRERA")
+    print("\n--- ANALISIS DE CARRERA ---")
     print(f"Tu velocidad es: {velocidad:.2f} km/h")
     print(f"Tu ritmo de carrera es: {ritmo_min}:{ritmo_seg:02d} min/km")
     print(f"Tu VO2 estimado es: {vo2:.2f}")
     print(f"Tu nivel de VO2 es: {nivel_vo2}")
     print(f"Tu MET es: {met:.2f}")
     print(f"Calorias quemadas: {calorias:.2f}")
-    print(obtener_zona_entrenamiento(esfuerzo))
+    print(f"Zona a trabajar: {zona_trabajo}")
+
+    # Generación y despliegue del plan personalizado con for y listas
+    dias_lista, entrenamientos_lista = generar_plan_personalizado(dias_entreno, zona_trabajo)
+    
+    print("\n--- PLAN DE ENTRENAMIENTO RECOMENDADO ---")
+    for i in range(len(dias_lista)):
+        print(f"{dias_lista[i]}: {entrenamientos_lista[i]}")
 
     continuar = input("\n¿Quieres analizar otra carrera? (si/no): ")
 
