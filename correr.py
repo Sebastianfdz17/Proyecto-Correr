@@ -95,21 +95,17 @@ def obtener_dias_semana(dias_disponibles):
 """Devuelve el plan de entrenamiento específico para la zona y días seleccionados."""
 def generar_plan_personalizado(dias_disponibles, zona):
     dias = obtener_dias_semana(dias_disponibles)
-    entrenamientos = []
-
-    # Selección de entrenamientos según la zona recomendada
-    if zona == "Velocidad":
-        opciones = [
+    entrenamientos = [
+        [
             "Piques cortos de aceleración (Sprint 50m)",
             "Carrera de técnica y multisaltos",
             "Sprints cortos con descanso completo",
             "Easy run + 4 aceleraciones finales",
-            "Cuestas cortas a máxima intensidad",
+            "Cuestas cortas",
             "Carrera suave + ejercicios de reactividad",
             "Descanso activo o rodaje muy suave"
-        ]
-    elif zona == "Resistencia aeróbica":
-        opciones = [
+        ],
+        [
             "Carrera continua a ritmo cómodo (Easy Run)",
             "Rodaje suave en Zona 2",
             "Carrera suave con cambios de ritmo ligeros",
@@ -117,29 +113,26 @@ def generar_plan_personalizado(dias_disponibles, zona):
             "Rodaje cómodo sostenido",
             "Tirada larga a ritmo suave",
             "Caminata activa o trote regenerativo"
-        ]
-    elif zona == "Umbral":
-        opciones = [
-            "Easy Run de calentamiento + 20 min a ritmo Umbral",
+        ],
+        [
+            "Easy Run + 20 min a ritmo umbral",
             "Intervalos de tiempo (Tempo Run 3x10 min)",
             "Rodaje suave de recuperación",
             "Bloques de tempo (2x15 min en Zona 3)",
-            "Tirada larga con bloques a ritmo de competencia",
+            "Tirada larga con ritmo controlado",
             "Fartlek (cambios de ritmo de 2 min)",
             "Trote muy suave de regeneración"
-        ]
-    elif zona == "VO2 máximo":
-        opciones = [
-            "Intervalos cortos (10x400m a máxima intensidad)",
+        ],
+        [
+            "Intervalos de 400 m",
             "Easy Run de recuperación",
-            "Repeticiones de 1km a ritmo de VO2 máx",
+            "Repeticiones de 1 km a ritmo de VO2 máx",
             "Intervalos en cuesta de 1 minuto",
-            "Fartlek intensivo (1 min fuerte / 1 min suave)",
-            "Tirada larga suave de descarga",
+            "Fartlek (1 min fuerte / 1 min suave)",
+            "Tirada larga suave",
             "Descanso activo"
-        ]
-    else: 
-        opciones = [
+        ],
+        [
             "Caminata o trote muy suave (20 min)",
             "Estiramientos dinámicos y rodaje suave",
             "Descanso total",
@@ -148,11 +141,25 @@ def generar_plan_personalizado(dias_disponibles, zona):
             "Movilidad articular y rodaje ligero",
             "Descanso total"
         ]
+    ]
+
+    if zona == "Velocidad":
+        fila = 0
+    elif zona == "Resistencia aeróbica":
+        fila = 1
+    elif zona == "Umbral":
+        fila = 2
+    elif zona == "VO2 máximo":
+        fila = 3
+    else:
+        fila = 4
+
+    entrenamientos_dia = []
 
     for i in range(dias_disponibles):
-        entrenamientos.append(opciones[i])
+        entrenamientos_dia.append(entrenamientos[fila][i])
 
-    return dias, entrenamientos
+    return dias, entrenamientos_dia
 
 
 """Programa principal"""
@@ -226,9 +233,10 @@ while continuar == "si":
     print(f"Calorias quemadas: {calorias:.2f}")
     print(f"Zona a trabajar: {zona_trabajo}")
 
-    # Generación y despliegue del plan personalizado con for y listas
-    dias_lista, entrenamientos_lista = generar_plan_personalizado(dias_entreno, zona_trabajo)
-    
+     dias_lista, entrenamientos_lista = generar_plan_personalizado(
+        dias_entreno, zona_trabajo
+    )
+
     print("\n--- PLAN DE ENTRENAMIENTO RECOMENDADO ---")
     for i in range(len(dias_lista)):
         print(f"{dias_lista[i]}: {entrenamientos_lista[i]}")
